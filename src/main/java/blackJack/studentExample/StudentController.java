@@ -1,4 +1,4 @@
-package com.blackJack.BlackJack.studentExample;
+package blackJack.studentExample;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

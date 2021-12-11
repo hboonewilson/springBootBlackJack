@@ -1,4 +1,4 @@
-package com.blackJack.BlackJack.studentExample;
+package blackJack.studentExample;
 
 
 import java.time.LocalDate;

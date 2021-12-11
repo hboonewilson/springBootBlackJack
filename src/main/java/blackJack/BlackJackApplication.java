@@ -1,8 +1,6 @@
-package com.blackJack.BlackJack;
+package blackJack;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
 public class BlackJackApplication {
 
 	public static void main(String[] args) {
