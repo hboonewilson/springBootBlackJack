@@ -1,11 +1,15 @@
 package blackJack.game;
 
+import blackJack.game.cardsAndHands.Hand;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 
 public class SharedHandState {
     private PlayerPot playerPot;
     private TablePot tablePot;
+
+    private Hand playerHand;
+    private Hand tableHand;
 
     private boolean canDoubleDown;
     private boolean canSplit;
@@ -15,11 +19,14 @@ public class SharedHandState {
     private boolean wantsSplit;
     private boolean wantsHit;
 
-    private int wager;
 
-    public SharedHandState(PlayerPot playerPot) {
+    public SharedHandState(PlayerPot playerPot, TablePot tablePot) {
         this.playerPot = playerPot;
-        this.tablePot = new TablePot(0);
+        this.tablePot = tablePot;
+
+        this.playerHand = new Hand();
+        this.tableHand = new Hand();
+
         this.canDoubleDown = false;
         this.canSplit = false;
         this.canHit = false;
@@ -27,6 +34,7 @@ public class SharedHandState {
         this.wantsDoubleDown = false;
         this.wantsSplit = false;
         this.wantsHit = false;
+
     }
 
     public PlayerPot getPlayerPot() {
@@ -93,11 +101,11 @@ public class SharedHandState {
         this.wantsHit = wantsHit;
     }
 
-    public int getWager() {
-        return wager;
+    public Hand getPlayerHand() {
+        return playerHand;
     }
 
-    public void setWager(int wager) {
-        this.wager = wager;
+    public Hand getTableHand() {
+        return tableHand;
     }
 }

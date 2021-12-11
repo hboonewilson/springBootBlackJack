@@ -1,48 +1,59 @@
 package blackJack;
-import blackJack.game.SaredGameState;
-import blackJack.game.cards.Deck;
+import blackJack.game.GameService;
+import blackJack.game.SharedGameState;
+import blackJack.game.SharedHandState;
+import blackJack.game.cardsAndHands.Deck;
+import blackJack.game.cardsAndHands.Hand;
 import blackJack.game.pots.PlayerPot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.print.attribute.standard.Media;
 
 @SpringBootApplication
 @RestController
+@ResponseBody
 public class BlackJackApplication {
-	Deck deck;
-	PlayerPot playerPot;
-	SaredGameState saredGameState;
+	GameService gameService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(BlackJackApplication.class, args);
 	}
 	@GetMapping(path="api/v1/startGame")
-	public SaredGameState getStartGame(@RequestParam int deckNum, @RequestParam int potAmount){
-		deck = new Deck(deckNum);
-		playerPot = new PlayerPot(potAmount);
-		saredGameState = new SaredGameState(playerPot);
-		return saredGameState;
+	public SharedGameState getStartGame(){
+		gameService = new GameService(3, 200);
+		return gameService.getSharedGameState();
 	}
 
 	@GetMapping(path="api/v1/draw")
 	public String draw(){
-		return deck.draw().toString();
+		return gameService.getDeck().draw().toString();
 	}
-	@GetMapping(path="api/v1/wager")
-	public String draw(@RequestParam int wagerAmount){
-		boolean canWager = playerPot.wager(wagerAmount);
-		if(canWager){
-			return String.format("Yes, you can wager $%d%nYou have $%d left.",
-					wagerAmount,
-					playerPot.getAmount());
+	@GetMapping(path="api/v1/playHand/wager")
+	public ResponseEntity<SharedGameState> wager(@RequestParam int wagerAmount){
+		boolean goodWager = gameService.wager(wagerAmount);
+		if (goodWager){
+			return ResponseEntity.status(HttpStatus.OK).body(gameService.getSharedGameState());
 		}
-		else {
-			return String.format("No, you can't wager $%d%nYou only have $%d left.",
-					wagerAmount,
-					playerPot.getAmount());
+		else{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(gameService.getSharedGameState());
 		}
+	}
+	@GetMapping(path="api/v1/playHand/initHands")
+	public SharedGameState initHands(){
+		gameService.initializeHands();
+		return gameService.getSharedGameState();
+
+	}
+	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public SharedGameState userInput(@RequestBody UserInput userInput){
+		gameService.changeUserInputFields(userInput);
+		gameService.respondToUserInput();
+		return gameService.getSharedGameState();
 	}
 
 }

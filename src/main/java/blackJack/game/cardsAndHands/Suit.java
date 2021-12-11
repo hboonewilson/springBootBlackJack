@@ -1,4 +1,4 @@
-package blackJack.game.cards;
+package blackJack.game.cardsAndHands;
 
 public enum Suit {
     HEART ("Heart"),

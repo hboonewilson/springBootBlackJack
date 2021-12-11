@@ -1,17 +1,17 @@
 package blackJack.game;
 
-import blackJack.game.cards.Deck;
 import blackJack.game.pots.PlayerPot;
+import blackJack.game.pots.TablePot;
 
-public class SaredGameState {
+public class SharedGameState {
     private boolean gamePlaying;
     private PlayerPot playerPot;
     private SharedHandState sharedHandState;
 
-    public SaredGameState(PlayerPot playerPot) {
+    public SharedGameState(PlayerPot playerPot) {
         this.playerPot = playerPot;
         this.gamePlaying = true;
-        this.sharedHandState = new SharedHandState(playerPot);
+        this.sharedHandState = new SharedHandState(playerPot, new TablePot());
 
     }
 

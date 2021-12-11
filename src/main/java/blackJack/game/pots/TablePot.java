@@ -11,6 +11,10 @@ public class TablePot extends Pot {
         super(wagerAmount*2);
         this.wager = wagerAmount;
     }
+    public void addToPot(int wagerAmount){
+        super.setAmount(wagerAmount * 2);
+        this.wager = wagerAmount;
+    }
     public void wipe(){
         super.setAmount(0);
     }
