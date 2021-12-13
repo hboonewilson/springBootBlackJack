@@ -17,6 +17,8 @@ public class GameService {
 
     public GameService(int deckNumber, int playerPotAmount) {
         this.deck = new Deck(deckNumber);
+        this.deck.shuffle();
+
         this.playerPot = new PlayerPot(playerPotAmount);
         this.sharedGameState = new SharedGameState(playerPot);
         this.sharedHandState = sharedGameState.getSharedHandState();

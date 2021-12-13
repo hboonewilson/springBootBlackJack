@@ -13,6 +13,6 @@ public class EvaluateHand {
     }
     public boolean checkCloser(Hand closer, Hand further){
         //will check check bust before... so if neither have busted highest wins.
-        return closer.getHandValue() < further.getHandValue();
+        return closer.getHandValue() > further.getHandValue();
     }
 }
