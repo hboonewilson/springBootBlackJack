@@ -1,9 +1,10 @@
 package blackJack.game;
 
-import blackJack.UserInput;
-import blackJack.UserInputResponse;
+import blackJack.game.user.UserInputResponse;
 import blackJack.game.cardsAndHands.Deck;
+import blackJack.game.cardsAndHands.DetermineHandWinner;
 import blackJack.game.cardsAndHands.Hand;
+import blackJack.game.pots.DivvyThePot;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 
@@ -20,6 +21,7 @@ public class GameService {
         this.sharedGameState = new SharedGameState(playerPot);
         this.sharedHandState = sharedGameState.getSharedHandState();
         this.tablePot = sharedGameState.getSharedHandState().getTablePot();
+
     }
     public boolean wager(int wagerAmount){
         boolean enoughMoney =  sharedGameState.getPlayerPot().wager(wagerAmount);
@@ -37,25 +39,34 @@ public class GameService {
         playerHand.addCard(deck.draw());
         tableHand.addCard(deck.draw());
 
-        sharedHandState.setCanHit(true);
+        sharedHandState.getUserCan().setCanHit(true);
     }
-    public void changeUserInputFields(UserInput userInput){
-        SharedHandState sharedHandState = getSharedHandState();
-        sharedHandState.setWantsDoubleDown(userInput.isWantsToDoubleDown());
-        sharedHandState.setWantsHit(userInput.isWantsToHit());
-        sharedHandState.setWantsSplit(userInput.isWantsToSplit());
-    }
+
     public void respondToUserInput() {
         SharedHandState sharedHandState = getSharedHandState();
         UserInputResponse userInputResponse = new UserInputResponse();
-        if (sharedHandState.isWantsDoubleDown()){
+        DetermineHandWinner determineHandWinner = new DetermineHandWinner(sharedHandState);
+
+        if (sharedHandState.getUserInput().isWantsToDoubleDown()){
             wager(tablePot.getWager());
+            DblDown dblDown = new DblDown(sharedHandState, deck);
+            dblDown.playHand();
         }
-        if (sharedHandState.isWantsHit()){
-            userInputResponse.hit(deck, sharedHandState.getPlayerHand());
-        }
-        if(sharedHandState.isWantsSplit()){
+        if(sharedHandState.getUserInput().isWantsToSplit()){
             userInputResponse.splitDeck();
+        }
+        if (sharedHandState.getUserInput().isWantsToHit() && sharedHandState.getUserCan().isCanHit()){
+            userInputResponse.hit(deck, sharedHandState.getPlayerHand());
+            userInputResponse.checkPlayerBust(sharedHandState);
+        }
+        //player is done.
+        else{
+            Hand tableHand = sharedHandState.getTableHand();
+            tableHand.tableDraw(deck);
+            Hand playerHand = sharedHandState.getPlayerHand();
+            determineHandWinner.determineHandWinner(playerHand, tableHand);
+            DivvyThePot divvyThePot = new DivvyThePot(playerPot, tablePot);
+            sharedHandState.setPlayingHand(false);
         }
     }
     public Deck getDeck() {

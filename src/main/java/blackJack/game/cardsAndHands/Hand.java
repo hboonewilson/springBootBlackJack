@@ -37,5 +37,11 @@ public class Hand {
         this.cards = cards;
         this.handValue =  calculateHandValue.determineCardsValue(cards);
     }
+    public void tableDraw(Deck deck){
+        while(this.handValue < 17){
+            this.cards.add(deck.draw());
+            this.handValue = calculateHandValue.determineCardsValue(cards);
+        }
+    }
 
 }

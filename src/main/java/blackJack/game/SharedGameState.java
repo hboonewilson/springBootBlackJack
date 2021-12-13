@@ -15,20 +15,8 @@ public class SharedGameState {
 
     }
 
-    public boolean isGamePlaying() {
-        return gamePlaying;
-    }
-
-    public void setGamePlaying(boolean gamePlaying) {
-        this.gamePlaying = gamePlaying;
-    }
-
     public PlayerPot getPlayerPot() {
         return playerPot;
-    }
-
-    public void setPlayerPot(PlayerPot playerPot) {
-        this.playerPot = playerPot;
     }
 
     public SharedHandState getSharedHandState() {
