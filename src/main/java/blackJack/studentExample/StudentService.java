@@ -1,4 +1,4 @@
-package com.blackJack.BlackJack.studentExample;
+package blackJack.studentExample;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
