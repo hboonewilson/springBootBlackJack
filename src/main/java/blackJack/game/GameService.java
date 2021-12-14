@@ -68,6 +68,7 @@ public class GameService {
             Hand playerHand = sharedHandState.getPlayerHand();
             determineHandWinner.determineHandWinner(playerHand, tableHand);
             DivvyThePot divvyThePot = new DivvyThePot(playerPot, tablePot);
+            divvyThePot.divvyThePot(sharedHandState.getWinnerState());
             sharedHandState.setPlayingHand(false);
         }
     }
