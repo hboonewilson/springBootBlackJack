@@ -1,4 +1,4 @@
-package blackJack.game.cardsAndHands;
+package blackJack.game.user;
 
 public class WinnerState {
     private boolean playerWon;

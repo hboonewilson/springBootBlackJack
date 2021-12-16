@@ -15,9 +15,6 @@ public class UserInputResponse {
         //do someting!
     }
 
-    public void checkPlayerBust(Deck deck, SharedHandState sharedHandState) {
-    }
-
     public void checkPlayerBust(SharedHandState sharedHandState) {
         Hand playerHand = sharedHandState.getPlayerHand();
         if (playerHand.getHandValue() > 21){

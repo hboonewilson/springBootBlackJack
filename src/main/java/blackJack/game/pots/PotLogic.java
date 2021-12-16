@@ -1,12 +1,12 @@
 package blackJack.game.pots;
 
-import blackJack.game.cardsAndHands.WinnerState;
+import blackJack.game.user.WinnerState;
 
-public class DivvyThePot {
+public class PotLogic {
     private PlayerPot playerPot;
     private TablePot tablePot;
 
-    public DivvyThePot(PlayerPot playerPot, TablePot tablePot) {
+    public PotLogic(PlayerPot playerPot, TablePot tablePot) {
         this.playerPot = playerPot;
         this.tablePot = tablePot;
     }
@@ -19,5 +19,21 @@ public class DivvyThePot {
             playerPot.addAmount(tablePot.getAmount());
         }
         tablePot.wipe();
+    }
+
+    public PlayerPot getPlayerPot() {
+        return playerPot;
+    }
+
+    public void setPlayerPot(PlayerPot playerPot) {
+        this.playerPot = playerPot;
+    }
+
+    public TablePot getTablePot() {
+        return tablePot;
+    }
+
+    public void setTablePot(TablePot tablePot) {
+        this.tablePot = tablePot;
     }
 }

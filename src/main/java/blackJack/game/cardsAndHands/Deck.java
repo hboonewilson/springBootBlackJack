@@ -17,6 +17,7 @@ public class Deck {
             }
         }
         this.numOfDecks = 1;
+        shuffle();
     }
     public Deck(int num){
         cards = new ArrayList<>();
@@ -29,14 +30,11 @@ public class Deck {
             }
         }
         this.numOfDecks = num;
+        shuffle();
     }
 
     public List<Card> getDeck(){
         return cards;
-    }
-
-    public void shuffle(){
-        Collections.shuffle(cards);
     }
     public Card draw(){
         return cards.remove(0);
@@ -44,9 +42,11 @@ public class Deck {
     public int getSize(){
         return cards.size();
     }
-
-
     public int getNumOfDecks() {
         return numOfDecks;
     }
+    private void shuffle(){
+        Collections.shuffle(cards);
+    }
+
 }

@@ -21,5 +21,13 @@ class TablePotTest {
         Assertions.assertEquals(wager*2, tablePot.getAmount());
 
     }
+    @Test
+    void givenSetWager_whenWagerIsTwenty_shouldSetWagerToTwentyAndPotAmountToFourty(){
+        int wager = 20;
+        TablePot tablePot = new TablePot();
+        tablePot.setWager(wager);
+        Assertions.assertEquals(wager, tablePot.getWager());
+        Assertions.assertEquals(wager*2, tablePot.getAmount());
+    }
 
 }

@@ -1,6 +1,8 @@
 package blackJack;
 import blackJack.game.GameService;
 import blackJack.game.SharedGameState;
+import blackJack.game.pots.PlayerPot;
+import blackJack.game.pots.TablePot;
 import blackJack.game.user.UserInput;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @SpringBootApplication
 @RestController
@@ -32,7 +33,9 @@ public class BlackJackApplication {
 	}
 	@GetMapping(path="api/v1/playHand/wager")
 	public ResponseEntity<SharedGameState> wager(@RequestParam int wagerAmount){
-		boolean goodWager = gameService.wager(wagerAmount);
+		PlayerPot playerPot = gameService.getPotLogic().getPlayerPot();
+		TablePot tablePot = gameService.getPotLogic().getTablePot();
+		boolean goodWager = playerPot.wager(wagerAmount, tablePot);
 		if (goodWager){
 			return ResponseEntity.status(HttpStatus.OK).body(gameService.getSharedGameState());
 		}
@@ -48,7 +51,7 @@ public class BlackJackApplication {
 	}
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public SharedGameState userInput(@RequestBody UserInput userInput){
-		gameService.getSharedHandState().setUserInput(userInput);
+		gameService.getSharedGameState().getSharedHandState().setUserInput(userInput);
 		gameService.respondToUserInput();
 		return gameService.getSharedGameState();
 	}

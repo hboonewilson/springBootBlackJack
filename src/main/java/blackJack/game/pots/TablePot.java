@@ -24,6 +24,7 @@ public class TablePot extends Pot {
     }
 
     public void setWager(Integer wager) {
+        super.setAmount(wager * 2);
         this.wager = wager;
     }
 }

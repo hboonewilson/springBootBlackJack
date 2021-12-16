@@ -1,6 +1,6 @@
 package blackJack.game.pots;
 
-import blackJack.game.cardsAndHands.WinnerState;
+import blackJack.game.user.WinnerState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +10,12 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 
 
-class DivvyThePotTest {
+class PotLogicTest {
     @Mock
     WinnerState winnerState = Mockito.mock(WinnerState.class);
     PlayerPot playerPot;
     TablePot tablePot;
-    DivvyThePot divvyThePot;
+    PotLogic potLogic;
     int potAmount = 100;
     int wager = 20;
 
@@ -23,7 +23,7 @@ class DivvyThePotTest {
     void setUp(){
         playerPot = new PlayerPot(potAmount);
         tablePot = new TablePot(wager);
-        divvyThePot = new DivvyThePot(playerPot, tablePot);
+        potLogic = new PotLogic(playerPot, tablePot);
     }
     @Test
     void givenDivvyThePot_whenTie_shouldReturnWagerToPlayerAndWipeTablePot(){
@@ -31,7 +31,7 @@ class DivvyThePotTest {
         when(winnerState.isTableWon()).thenReturn(true);
         when(winnerState.isPlayerWon()).thenReturn(true);
 
-        divvyThePot.divvyThePot(winnerState);
+        potLogic.divvyThePot(winnerState);
 
         Assertions.assertEquals(potAmount+wager, playerPot.getAmount());
         Assertions.assertEquals(0, tablePot.getAmount());
@@ -42,7 +42,7 @@ class DivvyThePotTest {
         when(winnerState.isPlayerWon()).thenReturn(true);
         when(winnerState.isTableWon()).thenReturn(false);
 
-        divvyThePot.divvyThePot(winnerState);
+        potLogic.divvyThePot(winnerState);
         //the amount in player pot with wager amount * 2 (table wagers same amount as player)
         Assertions.assertEquals(potAmount+(wager*2), playerPot.getAmount());
     }
@@ -51,7 +51,7 @@ class DivvyThePotTest {
         when(winnerState.isPlayerWon()).thenReturn(false);
         when(winnerState.isTableWon()).thenReturn(true);
 
-        divvyThePot.divvyThePot(winnerState);
+        potLogic.divvyThePot(winnerState);
 
         Assertions.assertEquals(potAmount, playerPot.getAmount());
         Assertions.assertEquals(0, tablePot.getAmount());

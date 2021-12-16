@@ -1,6 +1,6 @@
 package blackJack.game;
 
-import blackJack.game.cardsAndHands.WinnerState;
+import blackJack.game.user.WinnerState;
 import blackJack.game.user.UserCan;
 import blackJack.game.user.UserInput;
 import blackJack.game.cardsAndHands.Hand;
@@ -66,5 +66,13 @@ public class SharedHandState {
 
     public void setPlayingHand(boolean playingHand) {
         this.playingHand = playingHand;
+    }
+
+    public PlayerPot getPlayerPot() {
+        return playerPot;
+    }
+
+    public void setPlayerHand(Hand playerHand) {
+        this.playerHand = playerHand;
     }
 }

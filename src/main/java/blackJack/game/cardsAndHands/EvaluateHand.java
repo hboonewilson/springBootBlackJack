@@ -2,9 +2,6 @@ package blackJack.game.cardsAndHands;
 
 public class EvaluateHand {
 
-    public boolean checkOverSeventeen(Hand hand){
-        return hand.getHandValue() > 17;
-    }
     public boolean checkBust(Hand hand){
         return hand.getHandValue() > 21;
     }

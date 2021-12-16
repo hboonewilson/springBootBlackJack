@@ -5,14 +5,8 @@ import blackJack.game.SharedHandState;
 public class DetermineHandWinner {
     private final EvaluateHand evalHand = new EvaluateHand();
     private SharedHandState sharedHandState;
-    private Hand playerHand;
-    private Hand tableHand;
 
-    public DetermineHandWinner(SharedHandState sharedHandState, Hand playerHand, Hand tableHand) {
-        this.sharedHandState = sharedHandState;
-        this.playerHand = playerHand;
-        this.tableHand = tableHand;
-    }
+
 
     public DetermineHandWinner(SharedHandState sharedHandState) {
         this.sharedHandState = sharedHandState;
@@ -59,6 +53,4 @@ public class DetermineHandWinner {
         sharedHandState.getWinnerState().setTableWon(false);
     }
 
-    public void checkPlayerBustOnHit() {
-    }
 }

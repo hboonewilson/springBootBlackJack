@@ -3,6 +3,8 @@ package blackJack.game;
 import blackJack.game.cardsAndHands.Card;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
+import blackJack.game.pots.PlayerPot;
+import blackJack.game.pots.TablePot;
 
 import java.util.List;
 
@@ -21,5 +23,17 @@ public class DblDown {
         playerHand.addCard(deck.draw());
 
         tableHand.tableDraw(deck);
+    }
+
+    public boolean checkForDblDownState() {
+        PlayerPot playerPot = sharedHandState.getPlayerPot();
+        TablePot tablePot = sharedHandState.getTablePot();
+        int wager = tablePot.getWager();
+
+        return sharedHandState.getUserInput().isWantsToDoubleDown() && playerCanDouble() && playerPot.wager(wager, tablePot);
+    }
+
+    private boolean playerCanDouble() {
+        return sharedHandState.getPlayerHand().getCards().size() == 2;
     }
 }
