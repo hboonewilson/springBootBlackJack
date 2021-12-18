@@ -13,24 +13,22 @@ import blackJack.responseObjects.WagerAndInitHandResponse;
 public class GameService {
     private boolean gamePlaying;
     private Deck deck;
-    private PotLogic potLogic;
     private PlayerPot playerPot;
     private TablePot tablePot;
     private SharedHandState sharedHandState;
     private Hand playerHand;
     private Hand tableHand;
 
-
+    private int deckNum;
     private UserInput userInput;
     private UserCan userCan;
     private WinnerState winnerState;
 
     public GameService(int deckNumber, int playerPotAmount) {
         this.deck = new Deck(deckNumber);
-
+        this.deckNum = deckNumber;
         this.playerPot = new PlayerPot(playerPotAmount);
         this.tablePot = new TablePot();
-        this.potLogic = new PotLogic(playerPot, tablePot);
 
         this.sharedHandState = new SharedHandState(playerPot, tablePot);
         this.playerHand = new Hand();
@@ -51,15 +49,17 @@ public class GameService {
         userCan.setCanHit(true);
     }
 
-    public void respondToUserInput() {
+    public void respondToUserInput(UserInput userInput) {
         /*TODO
         Start from scratch in this method! Can be cleaned up much better.
         *  */
+        this.userInput = userInput;
+
 
     }
     public WagerAndInitHandResponse wager(int amount){
         if(playerPot.wager(amount, tablePot)){
-           return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),true);
+           return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),true, userCan);
         }
         else {
             return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),
@@ -73,11 +73,6 @@ public class GameService {
 
     public void setDeck(Deck deck) {
         this.deck = deck;
-    }
-
-
-    public PotLogic getPotLogic() {
-        return potLogic;
     }
 
     public void setUserInput(UserInput userInput) {

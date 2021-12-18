@@ -1,6 +1,7 @@
 package blackJack.responseObjects;
 
 import blackJack.game.cardsAndHands.Hand;
+import blackJack.game.user.UserCan;
 
 public class WagerAndInitHandResponse {
     /*
@@ -15,13 +16,15 @@ public class WagerAndInitHandResponse {
    private int playerPotLeft;
    private String errorMsg;
    private boolean goodWager;
+   private UserCan userCan;
 
-    public WagerAndInitHandResponse(int wagerAmount, Hand playerHand, Hand tableHand, int playerPotLeft, boolean validWager) {
+    public WagerAndInitHandResponse(int wagerAmount, Hand playerHand, Hand tableHand, int playerPotLeft, boolean validWager, UserCan userCan) {
         this.wagerAmount = wagerAmount;
         this.playerHand = playerHand;
         this.tableHand = tableHand;
         this.playerPotLeft = playerPotLeft;
         this.goodWager = validWager;
+        this.userCan = userCan;
     }
 
     public WagerAndInitHandResponse(int wagerAmount, Hand playerHand, Hand tableHand, int playerPotLeft, String errorMsg, boolean goodWager) {
@@ -31,6 +34,7 @@ public class WagerAndInitHandResponse {
         this.playerPotLeft = playerPotLeft;
         this.errorMsg = errorMsg;
         this.goodWager = goodWager;
+
     }
 
     public WagerAndInitHandResponse() {
@@ -62,6 +66,10 @@ public class WagerAndInitHandResponse {
 
     public String getErrorMsg() {
         return errorMsg;
+    }
+
+    public UserCan getUserCan() {
+        return userCan;
     }
 
     public boolean isGoodWager() {

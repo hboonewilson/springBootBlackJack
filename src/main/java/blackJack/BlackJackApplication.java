@@ -32,13 +32,11 @@ public class BlackJackApplication {
 
 	@GetMapping(path="api/v1/playHand/wagerAndInitHands")
 	public ResponseEntity<WagerAndInitHandResponse> wager(@RequestParam int wagerAmount){
-		PlayerPot playerPot = gameService.getPotLogic().getPlayerPot();
-		TablePot tablePot = gameService.getPotLogic().getTablePot();
 
 		ResponseEntity<WagerAndInitHandResponse> responseEntityStatus;
 		WagerAndInitHandResponse wagerAndInitHandResponse = gameService.wager(wagerAmount);
-		gameService.initializeHands();
 		if (wagerAndInitHandResponse.isGoodWager()){
+			gameService.initializeHands();
 			return ResponseEntity.status(HttpStatus.OK).body(wagerAndInitHandResponse);
 		}
 		else {
@@ -49,7 +47,7 @@ public class BlackJackApplication {
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public GameService userInput(@RequestBody UserInput userInput){
 		gameService.setUserInput(userInput);
-		gameService.respondToUserInput();
+		gameService.respondToUserInput(userInput);
 		return gameService;
 	}
 
