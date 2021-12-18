@@ -3,16 +3,10 @@ package blackJack.game;
 import blackJack.game.cardsAndHands.*;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
-import blackJack.game.user.UserInput;
-import org.junit.jupiter.api.Assertions;
+import blackJack.requestObjects.UserInput;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class DblDownTest {
     @Mock

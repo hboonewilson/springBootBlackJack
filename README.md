@@ -14,6 +14,8 @@ common HTTP GET/POST request/responses will allow the API to be consumed in vari
 </ul>
 <h3>//TODO</h3>
 <ul>
+    <li>RemovePotLogic? Yes/No maybe so REASON: don't need a playerPot! Just double player
+    money if he wins and if he doesn't take it from him</li>
     <li>Specific Objects to return to user for specific requests (StartGame/wagerInitHands/UserInput)</li>
     <li>Re-implement userInput method in gameService</li>
 </ul>

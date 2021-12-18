@@ -1,4 +1,4 @@
-package blackJack.game.user;
+package blackJack.requestObjects;
 
 public class UserInput {
     private boolean wantsToHit;

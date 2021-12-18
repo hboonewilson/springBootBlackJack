@@ -2,7 +2,7 @@ package blackJack.game.pots;
 
 
 public class TablePot extends Pot {
-    private Integer wager;
+    private Integer wager = 0;
 
     public TablePot() {
         super(0);

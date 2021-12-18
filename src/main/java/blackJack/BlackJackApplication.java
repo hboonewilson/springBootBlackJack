@@ -2,7 +2,9 @@ package blackJack;
 import blackJack.game.GameService;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
-import blackJack.game.user.UserInput;
+import blackJack.requestObjects.UserInput;
+import blackJack.responseObjects.InitializedGameResponse;
+import blackJack.responseObjects.WagerAndInitHandResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -21,26 +23,27 @@ public class BlackJackApplication {
 		SpringApplication.run(BlackJackApplication.class, args);
 	}
 	@GetMapping(path="api/v1/startGame")
-	public GameService getStartGame(){
-		gameService = new GameService(3, 200);
-		return gameService;
+	public InitializedGameResponse getStartGame(@RequestParam int deckNum, @RequestParam int potAmount){
+		gameService = new GameService(deckNum, potAmount);
+		return new InitializedGameResponse(gameService.getDeck().getSize(),
+				gameService.getPlayerPot().getAmount(),
+				gameService.isGamePlaying());
 	}
 
 	@GetMapping(path="api/v1/playHand/wagerAndInitHands")
-	public ResponseEntity<GameService> wager(@RequestParam int wagerAmount){
+	public ResponseEntity<WagerAndInitHandResponse> wager(@RequestParam int wagerAmount){
 		PlayerPot playerPot = gameService.getPotLogic().getPlayerPot();
 		TablePot tablePot = gameService.getPotLogic().getTablePot();
-		boolean goodWager = playerPot.wager(wagerAmount, tablePot);
-		ResponseEntity<GameService> responseEntityStatus;
-		if (goodWager){
-			responseEntityStatus = ResponseEntity.status(HttpStatus.OK).body(gameService);
-		}
-		else{
-			responseEntityStatus = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(gameService);
-		}
+
+		ResponseEntity<WagerAndInitHandResponse> responseEntityStatus;
+		WagerAndInitHandResponse wagerAndInitHandResponse = gameService.wager(wagerAmount);
 		gameService.initializeHands();
-		return responseEntityStatus;
+		if (wagerAndInitHandResponse.isGoodWager()){
+			return ResponseEntity.status(HttpStatus.OK).body(wagerAndInitHandResponse);
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(wagerAndInitHandResponse);
+		}
 	}
 
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)

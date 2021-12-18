@@ -1,15 +1,14 @@
 package blackJack.game;
 
 import blackJack.game.user.UserCan;
-import blackJack.game.user.UserInput;
-import blackJack.game.user.UserInputResponse;
+import blackJack.requestObjects.UserInput;
 import blackJack.game.cardsAndHands.Deck;
-import blackJack.game.cardsAndHands.DetermineHandWinner;
 import blackJack.game.cardsAndHands.Hand;
 import blackJack.game.pots.PotLogic;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 import blackJack.game.user.WinnerState;
+import blackJack.responseObjects.WagerAndInitHandResponse;
 
 public class GameService {
     private boolean gamePlaying;
@@ -58,6 +57,16 @@ public class GameService {
         *  */
 
     }
+    public WagerAndInitHandResponse wager(int amount){
+        if(playerPot.wager(amount, tablePot)){
+           return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),true);
+        }
+        else {
+            return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),
+                    "Not enough money to wager this amount", false);
+        }
+    }
+
     public Deck getDeck() {
         return deck;
     }
@@ -73,5 +82,17 @@ public class GameService {
 
     public void setUserInput(UserInput userInput) {
         this.userInput = userInput;
+    }
+
+    public PlayerPot getPlayerPot() {
+        return playerPot;
+    }
+
+    public TablePot getTablePot() {
+        return tablePot;
+    }
+
+    public boolean isGamePlaying() {
+        return gamePlaying;
     }
 }
