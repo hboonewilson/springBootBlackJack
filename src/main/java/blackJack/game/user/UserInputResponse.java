@@ -16,11 +16,7 @@ public class UserInputResponse {
     }
 
     public void checkPlayerBust(SharedHandState sharedHandState) {
-        Hand playerHand = sharedHandState.getPlayerHand();
-        if (playerHand.getHandValue() > 21){
-            sharedHandState.getWinnerState().setPlayerWon(true);
-            sharedHandState.getWinnerState().setTableWon(true);
-            sharedHandState.getUserCan().setCanHit(false);
+        //do something
         }
     }
-}
+

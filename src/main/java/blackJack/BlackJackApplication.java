@@ -1,6 +1,5 @@
 package blackJack;
 import blackJack.game.GameService;
-import blackJack.game.SharedGameState;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 import blackJack.game.user.UserInput;
@@ -22,38 +21,33 @@ public class BlackJackApplication {
 		SpringApplication.run(BlackJackApplication.class, args);
 	}
 	@GetMapping(path="api/v1/startGame")
-	public SharedGameState getStartGame(){
+	public GameService getStartGame(){
 		gameService = new GameService(3, 200);
-		return gameService.getSharedGameState();
+		return gameService;
 	}
 
-	@GetMapping(path="api/v1/draw")
-	public String draw(){
-		return gameService.getDeck().draw().toString();
-	}
-	@GetMapping(path="api/v1/playHand/wager")
-	public ResponseEntity<SharedGameState> wager(@RequestParam int wagerAmount){
+	@GetMapping(path="api/v1/playHand/wagerAndInitHands")
+	public ResponseEntity<GameService> wager(@RequestParam int wagerAmount){
 		PlayerPot playerPot = gameService.getPotLogic().getPlayerPot();
 		TablePot tablePot = gameService.getPotLogic().getTablePot();
 		boolean goodWager = playerPot.wager(wagerAmount, tablePot);
+		ResponseEntity<GameService> responseEntityStatus;
 		if (goodWager){
-			return ResponseEntity.status(HttpStatus.OK).body(gameService.getSharedGameState());
+			responseEntityStatus = ResponseEntity.status(HttpStatus.OK).body(gameService);
 		}
 		else{
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(gameService.getSharedGameState());
+			responseEntityStatus = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(gameService);
 		}
-	}
-	@GetMapping(path="api/v1/playHand/initHands")
-	public SharedGameState initHands(){
 		gameService.initializeHands();
-		return gameService.getSharedGameState();
-
+		return responseEntityStatus;
 	}
+
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public SharedGameState userInput(@RequestBody UserInput userInput){
-		gameService.getSharedGameState().getSharedHandState().setUserInput(userInput);
+	public GameService userInput(@RequestBody UserInput userInput){
+		gameService.setUserInput(userInput);
 		gameService.respondToUserInput();
-		return gameService.getSharedGameState();
+		return gameService;
 	}
 
 }
