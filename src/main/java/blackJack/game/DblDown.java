@@ -1,12 +1,9 @@
 package blackJack.game;
 
-import blackJack.game.cardsAndHands.Card;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
-import blackJack.game.pots.PlayerPot;
-import blackJack.game.pots.TablePot;
-
-import java.util.List;
+import blackJack.game.user.UserCan;
+import blackJack.requestObjects.UserInput;
 
 public class DblDown {
     private Deck deck;
@@ -19,7 +16,20 @@ public class DblDown {
         this.tableHand = tableHand;
     }
 
-    public void playHand() {
+
+    public boolean doublDown(UserInput userInput, UserCan userCan) {
+        if (userInput.isWantsToDoubleDown() && !userCan.isCanDoubleDown()){
+            return true;
+        }
+        else if(userInput.isWantsToDoubleDown() && userCan.isCanDoubleDown()){
+            playHand();
+            return false;
+        }
+        else{
+            return false;
+        }
+    }
+    private void playHand() {
 
         playerHand.addCard(deck.draw());
 

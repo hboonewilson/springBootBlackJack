@@ -15,7 +15,6 @@ class DblDownTest {
     UserInput userInput = Mockito.mock(UserInput.class);
     @Mock
     Hand playerHand = Mockito.mock(Hand.class);
-    SharedHandState sharedHandState;
     PlayerPot playerPot;
     TablePot tablePot;
     @Test

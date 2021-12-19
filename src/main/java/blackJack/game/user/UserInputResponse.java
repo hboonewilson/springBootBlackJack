@@ -1,6 +1,5 @@
 package blackJack.game.user;
 
-import blackJack.game.SharedHandState;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
 
@@ -15,7 +14,7 @@ public class UserInputResponse {
         //do someting!
     }
 
-    public void checkPlayerBust(SharedHandState sharedHandState) {
+    public void checkPlayerBust(Hand playerHand, UserCan userCan) {
         //do something
         }
     }

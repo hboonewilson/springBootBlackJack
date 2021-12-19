@@ -1,6 +1,5 @@
 package blackJack.game.cardsAndHands;
 
-import blackJack.game.SharedHandState;
 import blackJack.game.user.WinnerState;
 
 public class DetermineHandWinner {
@@ -11,6 +10,10 @@ public class DetermineHandWinner {
 
     public DetermineHandWinner(WinnerState winnerState) {
         this.winnerState = winnerState;
+    }
+
+    public DetermineHandWinner() {
+
     }
 
     public void determineHandWinner(Hand playerHand, Hand tableHand){

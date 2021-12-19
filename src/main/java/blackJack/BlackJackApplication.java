@@ -4,6 +4,7 @@ import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 import blackJack.requestObjects.UserInput;
 import blackJack.responseObjects.InitializedGameResponse;
+import blackJack.responseObjects.UserInputResponse;
 import blackJack.responseObjects.WagerAndInitHandResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,10 +46,9 @@ public class BlackJackApplication {
 	}
 
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public GameService userInput(@RequestBody UserInput userInput){
+	public UserInputResponse userInput(@RequestBody UserInput userInput){
 		gameService.setUserInput(userInput);
-		gameService.respondToUserInput(userInput);
-		return gameService;
+		return gameService.respondToUserInput(userInput);
 	}
 
 }

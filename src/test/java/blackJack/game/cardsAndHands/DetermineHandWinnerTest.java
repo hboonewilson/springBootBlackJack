@@ -1,6 +1,5 @@
 package blackJack.game.cardsAndHands;
 
-import blackJack.game.SharedHandState;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 import blackJack.game.user.WinnerState;

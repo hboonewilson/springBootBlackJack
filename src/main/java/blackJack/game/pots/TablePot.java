@@ -16,7 +16,9 @@ public class TablePot extends Pot {
         this.wager = wagerAmount;
     }
     public void wipe(){
+
         super.setAmount(0);
+        this.wager = 0;
     }
 
     public Integer getWager() {

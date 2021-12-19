@@ -1,13 +1,15 @@
 package blackJack.game;
 
+import blackJack.game.cardsAndHands.DetermineHandWinner;
+import blackJack.game.pots.DivvyPots;
 import blackJack.game.user.UserCan;
-import blackJack.requestObjects.UserInput;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
-import blackJack.game.pots.PotLogic;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
 import blackJack.game.user.WinnerState;
+import blackJack.requestObjects.UserInput;
+import blackJack.responseObjects.UserInputResponse;
 import blackJack.responseObjects.WagerAndInitHandResponse;
 
 public class GameService {
@@ -15,7 +17,6 @@ public class GameService {
     private Deck deck;
     private PlayerPot playerPot;
     private TablePot tablePot;
-    private SharedHandState sharedHandState;
     private Hand playerHand;
     private Hand tableHand;
 
@@ -30,33 +31,65 @@ public class GameService {
         this.playerPot = new PlayerPot(playerPotAmount);
         this.tablePot = new TablePot();
 
-        this.sharedHandState = new SharedHandState(playerPot, tablePot);
         this.playerHand = new Hand();
         this.tableHand = new Hand();
 
-        this.userInput = new UserInput();
+        this.userInput = new blackJack.requestObjects.UserInput();
         this.userCan = new UserCan();
         this.winnerState = new WinnerState();
-
+        this.gamePlaying = true;
     }
     public void initializeHands() {
-
+        resetDeck();
         playerHand.addCard(deck.draw());
         tableHand.addCard(deck.draw());
         playerHand.addCard(deck.draw());
         tableHand.addCard(deck.draw());
 
+        userCan.setCanDoubleDown(true);
         userCan.setCanHit(true);
     }
 
-    public void respondToUserInput(UserInput userInput) {
+    public UserInputResponse respondToUserInput(UserInput userInput) {
         /*TODO
         Start from scratch in this method! Can be cleaned up much better.
         *  */
+        resetDeck();
         this.userInput = userInput;
+        //checkDblDown
+        DblDown dblDown = new DblDown(playerHand, tableHand, deck);
+        UserInputResponse userInputResponseDblDown = new UserInputResponse();
+        if(dblDown.doublDown(userInput, userCan)){
+            userInputResponseDblDown.badDoubleDown();
+        }
+        else if (userInput.isWantsToHit()){
+            playerHand.addCard(deck.draw());
+            if (playerHand.getHandValue() > 21){
+                userCan.setCanHit(false);
+            }
+        }
+        else{
+            tableHand.tableDraw(deck);
+            DetermineHandWinner determineHandWinner = new DetermineHandWinner(winnerState);
+            determineHandWinner.determineHandWinner(playerHand, tableHand);
+        }
+        DivvyPots divvyPots = new DivvyPots(playerPot, tablePot);
+        divvyPots.divvy(winnerState);
+        setUserInputRespVariables(userInputResponseDblDown);
 
+        return userInputResponseDblDown;
 
     }
+
+    private void setUserInputRespVariables(UserInputResponse userInputResponseDblDown) {
+        userInputResponseDblDown.setPlayerHand(playerHand);
+        userInputResponseDblDown.setPlayerPot(playerPot);
+        userInputResponseDblDown.setWager(tablePot.getWager());
+        userInputResponseDblDown.setTableHand(tableHand);
+        userInputResponseDblDown.setTablePot(tablePot);
+        userInputResponseDblDown.setWinnerState(winnerState);
+    }
+
     public WagerAndInitHandResponse wager(int amount){
         if(playerPot.wager(amount, tablePot)){
            return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),true, userCan);
@@ -75,7 +108,7 @@ public class GameService {
         this.deck = deck;
     }
 
-    public void setUserInput(UserInput userInput) {
+    public void setUserInput(blackJack.requestObjects.UserInput userInput) {
         this.userInput = userInput;
     }
 
@@ -89,5 +122,10 @@ public class GameService {
 
     public boolean isGamePlaying() {
         return gamePlaying;
+    }
+    private void resetDeck(){
+        if (deck.getSize() < 10){
+            deck = new Deck(deckNum);
+        }
     }
 }
