@@ -14,12 +14,15 @@ common HTTP GET/POST request/responses will allow the API to be consumed in vari
     <li> Don't need a playerPot! Just double player money if he wins and if he doesn't take it from him</li>
     <li>Specific Objects to return to user for specific requests (StartGame/wagerInitHands/UserInput)</li>
     <li>Re-implement userInput method in gameService</li>
+    <li>Deploy jar file to AWS fargate and hit endpoint (not running currently)</li>
+    <li>Create a docker image of this project: first make a sample 
+        docker image for spring in a tutorial and deploy to AWS then try with this.
+        </li>
 </ul>
 <h3>//TODO</h3>
 <ul>
-    <li>Create a docker image of this project: first make a sample 
-    docker image for spring in a turorial and deploy to AWS then try with this.
-    </li>
+    <li>Create frontend to harness functionality</li>
+    <li>Add additional functionality (expand on doubling down and splitting deck)</li>
     
 </ul>
 
