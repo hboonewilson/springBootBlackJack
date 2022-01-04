@@ -60,7 +60,6 @@ Boolean inputs to tell application what the player wants to do
 <br>
 Returns:
 <ul>
-    <li></li>
     <li>String msg message to return to sender</li>
     <li>Hand playerHand player hand and points from hand</li>
     <li>Hand tableHand table hand and points from hand</li>
