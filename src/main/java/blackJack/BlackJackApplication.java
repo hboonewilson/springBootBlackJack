@@ -1,9 +1,11 @@
 package blackJack;
 import blackJack.game.GameService;
-import blackJack.game.SharedGameState;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
-import blackJack.game.user.UserInput;
+import blackJack.requestObjects.UserInput;
+import blackJack.responseObjects.InitializedGameResponse;
+import blackJack.responseObjects.UserInputResponse;
+import blackJack.responseObjects.WagerAndInitHandResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
@@ -22,38 +24,31 @@ public class BlackJackApplication {
 		SpringApplication.run(BlackJackApplication.class, args);
 	}
 	@GetMapping(path="api/v1/startGame")
-	public SharedGameState getStartGame(){
-		gameService = new GameService(3, 200);
-		return gameService.getSharedGameState();
+	public InitializedGameResponse getStartGame(@RequestParam int deckNum, @RequestParam int potAmount){
+		gameService = new GameService(deckNum, potAmount);
+		return new InitializedGameResponse(gameService.getDeck().getSize(),
+				gameService.getPlayerPot().getAmount(),
+				gameService.isGamePlaying());
 	}
 
-	@GetMapping(path="api/v1/draw")
-	public String draw(){
-		return gameService.getDeck().draw().toString();
-	}
-	@GetMapping(path="api/v1/playHand/wager")
-	public ResponseEntity<SharedGameState> wager(@RequestParam int wagerAmount){
-		PlayerPot playerPot = gameService.getPotLogic().getPlayerPot();
-		TablePot tablePot = gameService.getPotLogic().getTablePot();
-		boolean goodWager = playerPot.wager(wagerAmount, tablePot);
-		if (goodWager){
-			return ResponseEntity.status(HttpStatus.OK).body(gameService.getSharedGameState());
-		}
-		else{
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(gameService.getSharedGameState());
-		}
-	}
-	@GetMapping(path="api/v1/playHand/initHands")
-	public SharedGameState initHands(){
-		gameService.initializeHands();
-		return gameService.getSharedGameState();
+	@GetMapping(path="api/v1/playHand/wagerAndInitHands")
+	public ResponseEntity<WagerAndInitHandResponse> wager(@RequestParam int wagerAmount){
 
+		ResponseEntity<WagerAndInitHandResponse> responseEntityStatus;
+		WagerAndInitHandResponse wagerAndInitHandResponse = gameService.wager(wagerAmount);
+		if (wagerAndInitHandResponse.isGoodWager()){
+			gameService.initializeHands();
+			return ResponseEntity.status(HttpStatus.OK).body(wagerAndInitHandResponse);
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(wagerAndInitHandResponse);
+		}
 	}
+
 	@PostMapping(path="api/v1/playHand/input", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public SharedGameState userInput(@RequestBody UserInput userInput){
-		gameService.getSharedGameState().getSharedHandState().setUserInput(userInput);
-		gameService.respondToUserInput();
-		return gameService.getSharedGameState();
+	public UserInputResponse userInput(@RequestBody UserInput userInput){
+		gameService.setUserInput(userInput);
+		return gameService.respondToUserInput(userInput);
 	}
 
 }

@@ -2,7 +2,7 @@ package blackJack.game.pots;
 
 
 public class TablePot extends Pot {
-    private Integer wager;
+    private Integer wager = 0;
 
     public TablePot() {
         super(0);
@@ -16,7 +16,9 @@ public class TablePot extends Pot {
         this.wager = wagerAmount;
     }
     public void wipe(){
+
         super.setAmount(0);
+        this.wager = 0;
     }
 
     public Integer getWager() {

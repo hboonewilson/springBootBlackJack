@@ -1,28 +1,28 @@
-# Black Jack With Sprint Boot Application
+# Black Jack With Spring Boot Application
 <p>
-I'm attempting to create a blackJack that runs 
-on user's input from the command line at the
-moment. From there, I'll attempt to add in 
-HTTP or REST API calls using springBoot! 
-Then create a react front end. 
-
+In another project, I was able to create a working blackJackGame that used users' input to command line to run a game of 
+BlackJack. Now I am attempting to recreate the functionality through HTTP GET/POST requests to a remote API. This way,
+I'm able to create an application that's functionality can be much more user friendly on a browser/app. Also, the use of
+common HTTP GET/POST request/responses will allow the API to be consumed in various types of front ends.
 </p>
+<h3>//SOFAR</h3>
+<ul>
+    <li>Created a spring boot app with GET/POT endpoints reachable on localhost through postman</li>
+    <li>Added BlackJack Logic first iteration, returning correct output (initially with redundant and
+    weird objects</li>
+    <li>Refactored code to return correct output without weird objects</li>
+    <li> Don't need a playerPot! Just double player money if he wins and if he doesn't take it from him</li>
+    <li>Specific Objects to return to user for specific requests (StartGame/wagerInitHands/UserInput)</li>
+    <li>Re-implement userInput method in gameService</li>
+    <li>Deploy jar file to AWS fargate and hit endpoint (not running currently)</li>
+    <li>Create a docker image of this project: first make a sample 
+        docker image for spring in a tutorial and deploy to AWS then try with this.
+        </li>
+</ul>
 <h3>//TODO</h3>
 <ul>
-<li>Add mockito and create more robust test for 
-each class. <b>Done</b>
-</li>
-<li>Refactor classes to different packages <b>Done</b></li>
-<li>Create get/post interface <b>WIP</b> </li>
-<li>Add functionality of splitting the deck</li>
+    <li>Create frontend to harness functionality</li>
+    <li>Add additional functionality (expand on doubling down and splitting deck)</li>
+    
 </ul>
-<p>Idea to create get/post. Player creates a game state
-by running get new game. the response is a json object
-with data about questions to ask and data to show on the
-client side. the response of the player can respond in two ways.
-Need to determine which works best 
-</p>
-<ol>
-<li>The response is sent as post back to server</li>
-<li>The response is sent via a new type of endpoint back to the server</li>
-</ol>
+

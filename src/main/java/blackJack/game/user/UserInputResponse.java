@@ -1,6 +1,5 @@
 package blackJack.game.user;
 
-import blackJack.game.SharedHandState;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
 
@@ -15,12 +14,8 @@ public class UserInputResponse {
         //do someting!
     }
 
-    public void checkPlayerBust(SharedHandState sharedHandState) {
-        Hand playerHand = sharedHandState.getPlayerHand();
-        if (playerHand.getHandValue() > 21){
-            sharedHandState.getWinnerState().setPlayerWon(true);
-            sharedHandState.getWinnerState().setTableWon(true);
-            sharedHandState.getUserCan().setCanHit(false);
+    public void checkPlayerBust(Hand playerHand, UserCan userCan) {
+        //do something
         }
     }
-}
+

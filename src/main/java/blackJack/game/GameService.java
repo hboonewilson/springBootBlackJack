@@ -1,66 +1,105 @@
 package blackJack.game;
 
-import blackJack.game.user.UserInputResponse;
-import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.DetermineHandWinner;
+import blackJack.game.pots.DivvyPots;
+import blackJack.game.user.UserCan;
+import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
-import blackJack.game.pots.PotLogic;
 import blackJack.game.pots.PlayerPot;
 import blackJack.game.pots.TablePot;
+import blackJack.game.user.WinnerState;
+import blackJack.requestObjects.UserInput;
+import blackJack.responseObjects.UserInputResponse;
+import blackJack.responseObjects.WagerAndInitHandResponse;
 
 public class GameService {
+    private boolean gamePlaying;
     private Deck deck;
-    private PotLogic potLogic;
-    private SharedGameState sharedGameState;
+    private PlayerPot playerPot;
+    private TablePot tablePot;
+    private Hand playerHand;
+    private Hand tableHand;
+
+    private int deckNum;
+    private UserInput userInput;
+    private UserCan userCan;
+    private WinnerState winnerState;
 
     public GameService(int deckNumber, int playerPotAmount) {
         this.deck = new Deck(deckNumber);
+        this.deckNum = deckNumber;
+        this.playerPot = new PlayerPot(playerPotAmount);
+        this.tablePot = new TablePot();
 
-        PlayerPot playerPot = new PlayerPot(playerPotAmount);
-        TablePot tablePot = new TablePot();
-        this.potLogic = new PotLogic(playerPot, tablePot);
+        this.playerHand = new Hand();
+        this.tableHand = new Hand();
 
-        this.sharedGameState = new SharedGameState(playerPot, tablePot);
-
+        this.userInput = new blackJack.requestObjects.UserInput();
+        this.userCan = new UserCan();
+        this.winnerState = new WinnerState();
+        this.gamePlaying = true;
     }
     public void initializeHands() {
-        Hand playerHand = sharedGameState.getSharedHandState().getPlayerHand();
-        Hand tableHand = sharedGameState.getSharedHandState().getTableHand();
-
+        resetDeck();
         playerHand.addCard(deck.draw());
         tableHand.addCard(deck.draw());
         playerHand.addCard(deck.draw());
         tableHand.addCard(deck.draw());
 
-        sharedGameState.getSharedHandState().getUserCan().setCanHit(true);
+        userCan.setCanDoubleDown(true);
+        userCan.setCanHit(true);
     }
 
-    public void respondToUserInput() {
-        SharedHandState sharedHandState = sharedGameState.getSharedHandState();
-        UserInputResponse userInputResponse = new UserInputResponse();
-        DetermineHandWinner determineHandWinner = new DetermineHandWinner(sharedHandState);
-
-        DblDown dblDown = new DblDown(sharedHandState, deck);
-        if (dblDown.checkForDblDownState()){
-            dblDown.playHand();
+    public UserInputResponse respondToUserInput(UserInput userInput) {
+        /*TODO
+        Start from scratch in this method! Can be cleaned up much better.
+        *  */
+        resetDeck();
+        this.userInput = userInput;
+        //checkDblDown
+        DblDown dblDown = new DblDown(playerHand, tableHand, deck);
+        UserInputResponse userInputResponseDblDown = new UserInputResponse();
+        if(dblDown.doublDown(userInput, userCan)){
+            userInputResponseDblDown.badDoubleDown();
         }
-        if(sharedHandState.getUserInput().isWantsToSplit()){
-            userInputResponse.splitDeck();
+        else if (userInput.isWantsToHit()){
+            playerHand.addCard(deck.draw());
+            if (playerHand.getHandValue() > 21){
+                userCan.setCanHit(false);
+            }
         }
-        if (sharedHandState.getUserInput().isWantsToHit() && sharedHandState.getUserCan().isCanHit()){
-            userInputResponse.hit(deck, sharedHandState.getPlayerHand());
-            userInputResponse.checkPlayerBust(sharedHandState);
-        }
-        //player is done.
         else{
-            Hand tableHand = sharedHandState.getTableHand();
             tableHand.tableDraw(deck);
-            Hand playerHand = sharedHandState.getPlayerHand();
+            DetermineHandWinner determineHandWinner = new DetermineHandWinner(winnerState);
             determineHandWinner.determineHandWinner(playerHand, tableHand);
-            potLogic.divvyThePot(sharedHandState.getWinnerState());
-            sharedHandState.setPlayingHand(false);
+        }
+        DivvyPots divvyPots = new DivvyPots(playerPot, tablePot);
+        divvyPots.divvy(winnerState);
+        setUserInputRespVariables(userInputResponseDblDown);
+
+        return userInputResponseDblDown;
+
+    }
+
+    private void setUserInputRespVariables(UserInputResponse userInputResponseDblDown) {
+        userInputResponseDblDown.setPlayerHand(playerHand);
+        userInputResponseDblDown.setPlayerPot(playerPot);
+        userInputResponseDblDown.setWager(tablePot.getWager());
+        userInputResponseDblDown.setTableHand(tableHand);
+        userInputResponseDblDown.setTablePot(tablePot);
+        userInputResponseDblDown.setWinnerState(winnerState);
+    }
+
+    public WagerAndInitHandResponse wager(int amount){
+        if(playerPot.wager(amount, tablePot)){
+           return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),true, userCan);
+        }
+        else {
+            return new WagerAndInitHandResponse(tablePot.getWager(),playerHand,tableHand,playerPot.getAmount(),
+                    "Not enough money to wager this amount", false);
         }
     }
+
     public Deck getDeck() {
         return deck;
     }
@@ -69,16 +108,24 @@ public class GameService {
         this.deck = deck;
     }
 
-
-    public SharedGameState getSharedGameState() {
-        return sharedGameState;
+    public void setUserInput(blackJack.requestObjects.UserInput userInput) {
+        this.userInput = userInput;
     }
 
-    public void setSharedGameState(SharedGameState sharedGameState) {
-        this.sharedGameState = sharedGameState;
+    public PlayerPot getPlayerPot() {
+        return playerPot;
     }
 
-    public PotLogic getPotLogic() {
-        return potLogic;
+    public TablePot getTablePot() {
+        return tablePot;
+    }
+
+    public boolean isGamePlaying() {
+        return gamePlaying;
+    }
+    private void resetDeck(){
+        if (deck.getSize() < 10){
+            deck = new Deck(deckNum);
+        }
     }
 }

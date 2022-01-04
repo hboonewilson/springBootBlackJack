@@ -1,15 +1,19 @@
 package blackJack.game.cardsAndHands;
 
-import blackJack.game.SharedHandState;
+import blackJack.game.user.WinnerState;
 
 public class DetermineHandWinner {
     private final EvaluateHand evalHand = new EvaluateHand();
-    private SharedHandState sharedHandState;
+    private WinnerState winnerState;
 
 
 
-    public DetermineHandWinner(SharedHandState sharedHandState) {
-        this.sharedHandState = sharedHandState;
+    public DetermineHandWinner(WinnerState winnerState) {
+        this.winnerState = winnerState;
+    }
+
+    public DetermineHandWinner() {
+
     }
 
     public void determineHandWinner(Hand playerHand, Hand tableHand){
@@ -39,18 +43,18 @@ public class DetermineHandWinner {
     }
 
     private void tie() {
-        sharedHandState.getWinnerState().setPlayerWon(true);
-        sharedHandState.getWinnerState().setTableWon(true);
+        winnerState.setPlayerWon(true);
+        winnerState.setTableWon(true);
     }
 
     private void tableWins() {
-        sharedHandState.getWinnerState().setPlayerWon(false);
-        sharedHandState.getWinnerState().setTableWon(true);
+        winnerState.setPlayerWon(false);
+        winnerState.setTableWon(true);
     }
 
     private void playerWins() {
-        sharedHandState.getWinnerState().setPlayerWon(true);
-        sharedHandState.getWinnerState().setTableWon(false);
+        winnerState.setPlayerWon(true);
+        winnerState.setTableWon(false);
     }
 
 }

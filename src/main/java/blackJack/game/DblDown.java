@@ -1,39 +1,38 @@
 package blackJack.game;
 
-import blackJack.game.cardsAndHands.Card;
 import blackJack.game.cardsAndHands.Deck;
 import blackJack.game.cardsAndHands.Hand;
-import blackJack.game.pots.PlayerPot;
-import blackJack.game.pots.TablePot;
-
-import java.util.List;
+import blackJack.game.user.UserCan;
+import blackJack.requestObjects.UserInput;
 
 public class DblDown {
-    private SharedHandState sharedHandState;
     private Deck deck;
-    public DblDown(SharedHandState sharedHandState, Deck deck) {
-        this.sharedHandState = sharedHandState;
+    Hand playerHand;
+    Hand tableHand;
+
+    public DblDown(Hand playerHand, Hand tableHand, Deck deck) {
         this.deck = deck;
+        this.playerHand = playerHand;
+        this.tableHand = tableHand;
     }
 
-    public void playHand() {
-        Hand playerHand = sharedHandState.getPlayerHand();
-        Hand tableHand = sharedHandState.getTableHand();
+
+    public boolean doublDown(UserInput userInput, UserCan userCan) {
+        if (userInput.isWantsToDoubleDown() && !userCan.isCanDoubleDown()){
+            return true;
+        }
+        else if(userInput.isWantsToDoubleDown() && userCan.isCanDoubleDown()){
+            playHand();
+            return false;
+        }
+        else{
+            return false;
+        }
+    }
+    private void playHand() {
 
         playerHand.addCard(deck.draw());
 
         tableHand.tableDraw(deck);
-    }
-
-    public boolean checkForDblDownState() {
-        PlayerPot playerPot = sharedHandState.getPlayerPot();
-        TablePot tablePot = sharedHandState.getTablePot();
-        int wager = tablePot.getWager();
-
-        return sharedHandState.getUserInput().isWantsToDoubleDown() && playerCanDouble() && playerPot.wager(wager, tablePot);
-    }
-
-    private boolean playerCanDouble() {
-        return sharedHandState.getPlayerHand().getCards().size() == 2;
     }
 }
